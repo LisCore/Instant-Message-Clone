@@ -1,5 +1,5 @@
 import User from '../models/user.model.js';
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import generateTokenAndSetCookie from '../utils/generateToken.js';
 
 export const signup = async (req, res) => {
@@ -41,6 +41,8 @@ export const signup = async (req, res) => {
                 _id: newUser._id,
                 fullName: newUser.fullName,
                 username: newUser.username,
+                password: hashedPassword,
+                gender,
                 profilePic: newUser.profilePic
             });
         } else {
@@ -57,7 +59,7 @@ export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
-        const isPassCorrect = await bcrypt.compare(password, user?.password || "");
+        const isPassCorrect = await bcryptjs.compare(password, user?.password || "");
         if (!user || !isPassCorrect) {
             return res.status(400).json({ error: "Invalid username or password" });
         }
